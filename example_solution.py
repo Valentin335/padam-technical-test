@@ -4,7 +4,7 @@ from graph import Graph
 def example_solution(graph: Graph) -> list:
     """Implement a naive solution to find a path in the graph which travels all edges."""
     uncovered_edges = set(graph.edges)
-    current_vertex = 0  # Pick a starting vertex
+    current_vertex = graph.edges[0][0]  # Pick a starting vertex (of this component)
     path = []
 
     while uncovered_edges:
@@ -15,7 +15,7 @@ def example_solution(graph: Graph) -> list:
                 next_vertex = edge[1] if edge[0] == current_vertex else edge[0]
                 break
 
-        if next_vertex:
+        if next_vertex is not None:  # vertex 0 is a valid next vertex
             path.append(
                 (
                     current_vertex,
