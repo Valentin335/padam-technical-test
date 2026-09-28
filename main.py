@@ -1,22 +1,21 @@
 from input import parse_cmd_line, parse_file
 from graph import Graph
-from example_solution import example_solution
+from instance import Instance
+from example_solution import solve, print_paths
 
 
 def main():
     in_file, plot_graph = parse_cmd_line()
     vertices, edges = parse_file(in_file)
     print(f"#E={len(edges)}, #V={len(vertices)}")
-    graph = Graph(vertices, edges)
+    instance = Instance(vertices, edges)
 
-    path = example_solution(graph)
-
-    print("Length of path found:", len(path) + 1)
-    print("Value of path found:", sum(edge[2] for edge in path))
+    paths = solve(instance)
+    print_paths(paths)
 
     if plot_graph:
-        graph.plot()
-        graph.display_path(path=path)
+        Graph(vertices, edges).plot()
+        Graph.display_paths(paths=paths)
 
 
 if __name__ == "__main__":

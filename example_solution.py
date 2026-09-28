@@ -48,3 +48,10 @@ def solve(instance: Instance) -> list[list]:
         print(f"Component {index}: #E={len(component.edges)}, covered edges={len(covered)}/{len(component.edges)}")
         paths.append(path)
     return paths
+
+
+def print_paths(paths: list[list]):
+    """Print the length and value of each path, then the total value."""
+    for index, path in enumerate(paths):
+        print(f"Path {index}: length of path found={len(path) + 1}, value of path found={sum(edge[2] for edge in path)}")
+    print("Total value of paths found:", sum(edge[2] for path in paths for edge in path))
