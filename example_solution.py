@@ -1,6 +1,7 @@
 from graph import Graph
 from instance import Instance
 from eulerian import eulerian_path
+from eulerize import edges_to_duplicate
 
 
 def example_solution(graph: Graph) -> list:
@@ -44,14 +45,13 @@ def solve(instance: Instance) -> list[list]:
 
     paths = []
     for index, component in enumerate(components):
-        try:
-            path = eulerian_path(component)
-        except ValueError as error:
-            # TODO: duplicate edges so that at most 2 vertices are odd, then use eulerian_path
-            print(f"Component {index}: {error}, fallback on the greedy.")
-            path = example_solution(component)
+        duplicated = edges_to_duplicate(component)
+        path = eulerian_path(Graph(component.vertices, component.edges + duplicated))
         covered = {(min(edge[0], edge[1]), max(edge[0], edge[1]), edge[2]) for edge in path}
-        print(f"Component {index}: #E={len(component.edges)}, covered edges={len(covered)}/{len(component.edges)}")
+        print(
+            f"Component {index}: #E={len(component.edges)}, duplicated edges={len(duplicated)}, "
+            f"covered edges={len(covered)}/{len(component.edges)}"
+        )
         paths.append(path)
     return paths
 
