@@ -35,6 +35,9 @@ def parse_file(file_name: str) -> tuple[list[tuple], list[tuple]]:
     file_name : str
         txt file, with list of vertices coordinates, and list of edges.
 
+    Identical parallel edges (same endpoints, in any order, and same weight) are merged
+    into a single edge; parallel edges with different weights are all kept.
+
     Returns
     -------
     tuple[list[tuple], list[tuple]]
@@ -43,6 +46,7 @@ def parse_file(file_name: str) -> tuple[list[tuple], list[tuple]]:
     with open(file_name, "r") as file:
         lines = file.readlines()
     vertices, edges = [], []
+    seen_edges, merged_edges = set(), 0
     for i, line in enumerate(lines):
         if i == 0:
             continue
@@ -52,8 +56,15 @@ def parse_file(file_name: str) -> tuple[list[tuple], list[tuple]]:
         elif len(splitted_line) == 3:
             vertex_1, vertex_2 = int(splitted_line[0]), int(splitted_line[1])
             weight = int(splitted_line[2])
+            key = (min(vertex_1, vertex_2), max(vertex_1, vertex_2), weight)
+            if key in seen_edges:
+                merged_edges += 1
+                continue
+            seen_edges.add(key)
             coordinates_1 = vertices[vertex_1]
             coordinates_2 = vertices[vertex_2]
             edges.append((vertex_1, vertex_2, weight, coordinates_1, coordinates_2))
 
+    if merged_edges:
+        print(f"Warning: {merged_edges} identical parallel edges (same endpoints and weight) merged.")
     return vertices, edges
