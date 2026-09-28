@@ -1,4 +1,5 @@
 from graph import Graph
+from instance import Instance
 
 
 def example_solution(graph: Graph) -> list:
@@ -32,3 +33,18 @@ def example_solution(graph: Graph) -> list:
             break
 
     return path
+
+
+def solve(instance: Instance) -> list[list]:
+    """Compute one path per connected component of the instance."""
+    components = instance.connected_components()
+    if len(components) > 1:
+        print(f"Warning: {len(components)} connected components, one path per component is computed.")
+
+    paths = []
+    for index, component in enumerate(components):
+        path = example_solution(component)
+        covered = {(min(edge[0], edge[1]), max(edge[0], edge[1]), edge[2]) for edge in path}
+        print(f"Component {index}: #E={len(component.edges)}, covered edges={len(covered)}/{len(component.edges)}")
+        paths.append(path)
+    return paths
