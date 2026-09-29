@@ -2,6 +2,7 @@ from input import parse_cmd_line, parse_file
 from graph import Graph
 from instance import Instance
 from example_solution import solve, print_paths
+from checker import check
 
 
 def main():
@@ -12,6 +13,7 @@ def main():
 
     paths = solve(instance)
     print_paths(paths)
+    check(instance, paths)
 
     if plot_graph:
         Graph(vertices, edges).plot()

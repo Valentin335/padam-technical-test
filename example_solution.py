@@ -47,11 +47,7 @@ def solve(instance: Instance) -> list[list]:
     for index, component in enumerate(components):
         duplicated = edges_to_duplicate(component)
         path = eulerian_path(Graph(component.vertices, component.edges + duplicated))
-        covered = {(min(edge[0], edge[1]), max(edge[0], edge[1]), edge[2]) for edge in path}
-        print(
-            f"Component {index}: #E={len(component.edges)}, duplicated edges={len(duplicated)}, "
-            f"covered edges={len(covered)}/{len(component.edges)}"
-        )
+        print(f"Component {index}: #E={len(component.edges)}, duplicated edges={len(duplicated)}")
         paths.append(path)
     return paths
 
