@@ -1,10 +1,13 @@
 from graph import Graph
+from instance import Instance
+from eulerian import eulerian_path
+from eulerize import edges_to_duplicate
 
 
 def example_solution(graph: Graph) -> list:
     """Implement a naive solution to find a path in the graph which travels all edges."""
     uncovered_edges = set(graph.edges)
-    current_vertex = 0  # Pick a starting vertex
+    current_vertex = graph.edges[0][0]  # Pick a starting vertex (of this component)
     path = []
 
     while uncovered_edges:
@@ -15,7 +18,7 @@ def example_solution(graph: Graph) -> list:
                 next_vertex = edge[1] if edge[0] == current_vertex else edge[0]
                 break
 
-        if next_vertex:
+        if next_vertex is not None:  # vertex 0 is a valid next vertex
             path.append(
                 (
                     current_vertex,
@@ -32,3 +35,25 @@ def example_solution(graph: Graph) -> list:
             break
 
     return path
+
+
+def solve(instance: Instance) -> list[list]:
+    """Compute one path per connected component of the instance."""
+    components = instance.connected_components()
+    if len(components) > 1:
+        print(f"Warning: {len(components)} connected components, one path per component is computed.")
+
+    paths = []
+    for index, component in enumerate(components):
+        duplicated = edges_to_duplicate(component)
+        path = eulerian_path(Graph(component.vertices, component.edges + duplicated))
+        print(f"Component {index}: #E={len(component.edges)}, duplicated edges={len(duplicated)}")
+        paths.append(path)
+    return paths
+
+
+def print_paths(paths: list[list]):
+    """Print the length and value of each path, then the total value."""
+    for index, path in enumerate(paths):
+        print(f"Path {index}: length of path found={len(path) + 1}, value of path found={sum(edge[2] for edge in path)}")
+    print("Total value of paths found:", sum(edge[2] for path in paths for edge in path))
